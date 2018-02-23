@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.UUID;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
@@ -32,11 +33,11 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.Upload;
 
-import myDropbox_5731058621.User;
+import myDropbox_v2_5731058621.User;
 
 public class Main {
 	
-	//DynamoDB
+		//DynamoDB
 		static AmazonDynamoDB client = AmazonDynamoDBClientBuilder
 				.standard()
 				.withRegion(Regions.AP_SOUTHEAST_1)
@@ -170,9 +171,10 @@ public class Main {
 					System.out.println("Please Login first.");
 					continue;
 				}
-				String fileName = input.nextLine();
-				String key = currentUser.getUsername() + fileName;
-				System.out.println(key+" key");
+				String fileName = input.next();
+				String userName = input.next();
+				String key = userName + " " + fileName;
+				//System.out.println(key+" key");
 				S3Object object = null;
 				try {
 					object = s3Client.getObject(new GetObjectRequest(bucketName, key));
@@ -204,6 +206,11 @@ public class Main {
 						"Thank you for using myDropbox.\r\n" +
 						"See you again!" );
 				System.exit(0);
+			}else if(command.compareToIgnoreCase("share")==0) {
+				String fileName = input.next();
+				String shareUsername = input.next();
+				boolean isOk = addPermission(shareUsername, fileName);
+				if(isOk)System.out.println("OK");
 			}
 		}
 	}
@@ -239,21 +246,49 @@ public class Main {
 		}
 	}
 	
+	private static boolean addPermission(String shareUsername,String fileName) {
+		Permission permis = new Permission(currentUser.getUsername()+" "+fileName,shareUsername);
+		mapper.save(permis);
+		return true;
+		
+//		Table table = dynamoDB.getTable("myDropBoxPermission");
+//        try {
+//        	UUID id = UUID.randomUUID();
+//        	String idString = String.valueOf(id);
+//            table.putItem(new Item().withPrimaryKey("id", idString)
+//            		.withString("objectKey", shareUsername + " " +  fileName)
+//                    .withString("usernameAllowed", shareUsername));
+//            return true;
+//            
+//        }
+//        catch (Exception e) {
+//            System.err.println("Unable to add permission: " + shareUsername+" "+fileName);
+//            System.err.println(e.getMessage());
+//            return false;
+//        }
+	}
+	
 	private static void addUser(String username,String pass) {
-		Table table = dynamoDB.getTable("myDropboxUsers");
-        final Map<String, Object> infoMap = new HashMap<String, Object>();
-        infoMap.put("username", username);
-        infoMap.put("password", pass);
-        try {
-            //System.out.println("++Adding a new user...");
-            PutItemOutcome outcome = table
-                    .putItem(new Item().withPrimaryKey("username", username, "password", pass));
-            //System.out.println("++Adding succeeded\n");
-        }
-        catch (Exception e) {
-            System.err.println("Unable to add user: " + username);
-            System.err.println(e.getMessage());
-        }
+		
+		User newuser = new User();
+		newuser.setUsername(username);
+		newuser.setPassword(pass);
+		mapper.save(newuser);
+		
+//		Table table = dynamoDB.getTable("myDropboxUsers");
+//        final Map<String, Object> infoMap = new HashMap<String, Object>();
+//        infoMap.put("username", username);
+//        infoMap.put("password", pass);
+//        try {
+//            //System.out.println("++Adding a new user...");
+//            PutItemOutcome outcome = table
+//                    .putItem(new Item().withPrimaryKey("username", username, "password", pass));
+//            //System.out.println("++Adding succeeded\n");
+//        }
+//        catch (Exception e) {
+//            System.err.println("Unable to add user: " + username);
+//            System.err.println(e.getMessage());
+//        }
 	}
 	
 	private static void getUser(DynamoDBMapper mapper, String username) throws Exception {
