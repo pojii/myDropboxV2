@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/aspectjrt-1.8.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/aspectjweaver.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/aws-java-sdk-1.11.277.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/aws-java-sdk-1.11.277-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/aws-java-sdk-1.11.277-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/aws-swf-build-tools-1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/commons-codec-1.9.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/commons-logging-1.1.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/freemarker-2.3.9.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/httpclient-4.5.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/httpcore-4.4.4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/ion-java-1.0.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/jackson-annotations-2.6.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/jackson-core-2.6.7.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/jackson-databind-2.6.7.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/jackson-dataformat-cbor-2.6.7.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/javax.mail-api-1.4.6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/jmespath-java-1.11.277.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/joda-time-2.8.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/netty-buffer-4.1.17.Final.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/netty-codec-4.1.17.Final.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/netty-codec-http-4.1.17.Final.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/netty-common-4.1.17.Final.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/netty-handler-4.1.17.Final.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/netty-resolver-4.1.17.Final.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/netty-transport-4.1.17.Final.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/spring-beans-3.0.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/spring-context-3.0.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/spring-core-3.0.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Poj/Desktop/aws-java-sdk-1.11.277/spring-test-3.0.7.RELEASE.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
