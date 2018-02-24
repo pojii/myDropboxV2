@@ -178,25 +178,40 @@ public class Main {
 				String fileName = input.next();
 				String userName = input.next();
 				String key = userName + " " + fileName;
-				//System.out.println(key+" key");
-				S3Object object = null;
-				try {
-					object = S3.s3Client.getObject(new GetObjectRequest(S3.bucketName, key));
-					InputStream reader = new BufferedInputStream(
-							   object.getObjectContent());
-					File file = new File(key);
-					OutputStream writer = new BufferedOutputStream(new FileOutputStream(file));
-					int read = -1;
-					while ( ( read = reader.read() ) != -1 ) {
-					    writer.write(read);
+				
+				Map<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
+				eav.put(":username", new AttributeValue().withS(currentUser.getUsername()));
+				
+				DynamoDBQueryExpression<Permission> queryExpression = new DynamoDBQueryExpression<Permission>() 
+					    .withKeyConditionExpression("username = :username")
+					    .withExpressionAttributeValues(eav);
+				List<Permission> permissions = DynamoDB.mapper.query(Permission.class, queryExpression);
+				
+				
+				
+				if(userName.equals(currentUser.getUsername())||containsKey(permissions, key)) {
+					S3Object object = null;
+					try {
+						object = S3.s3Client.getObject(new GetObjectRequest(S3.bucketName, key));
+						InputStream reader = new BufferedInputStream(
+								   object.getObjectContent());
+						File file = new File(key);
+						OutputStream writer = new BufferedOutputStream(new FileOutputStream(file));
+						int read = -1;
+						while ( ( read = reader.read() ) != -1 ) {
+						    writer.write(read);
+						}
+						writer.flush();
+						writer.close();
+						reader.close();
+						System.out.println("OK");
+					}catch(Exception e) {
+						System.out.println("File not found, please check file name.");
 					}
-					writer.flush();
-					writer.close();
-					reader.close();
-					System.out.println("OK");
-				}catch(Exception e) {
-					System.out.println("File not found, please check file name.");
+				}else {
+					System.out.println("You don't have Permission");
 				}
+				
 			}else if(command.compareToIgnoreCase("logout")==0) {
 				if(!currentUser.isValid()) {
 					System.out.println("Please Login first.");
@@ -222,6 +237,10 @@ public class Main {
 				if(isOk)System.out.println("OK");
 			}
 		}
+	}
+	
+	public static boolean containsKey(final List<Permission> list, final String key){
+	    return list.stream().filter(o -> o.getObjectKey().equals(key)).findFirst().isPresent();
 	}
 	
 	private static boolean login(String username,String pass) {
