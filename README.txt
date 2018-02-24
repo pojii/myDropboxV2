@@ -25,3 +25,20 @@ addPermission(String shareUsername,String fileName)
 	add permission file (share file to other)
 addUser(String username,String pass) 
 	register new user
+	
+	
+**how to run**
+- create user
+	newuser 'username' 'password' 'confirmpassword'
+-login 
+	login 'username' 'password'
+-view 
+	view file that have permission
+- get 
+	download file to project directory so file name is ownername and filename example
+	"poj example.txt"
+- logout 
+	logout user
+- share 
+	share own file to other user
+	example "share example.txt poj"
