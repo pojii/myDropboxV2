@@ -33,13 +33,13 @@ import myDropbox_v2_5731058621.User;
 public class Main {
 	
 	//user state
-	static User currentUser = new User();
+	static User currentUser = new User();//this is logined user if don't have any one login it equal to null
 		
 	@SuppressWarnings("deprecation")
 	public static void main(String[] args) throws InterruptedException {
 		@SuppressWarnings("resource")
-		Scanner input = new Scanner(System.in);
-		System.out.println(
+		Scanner input = new Scanner(System.in); //input scanner
+		System.out.println(//greeting message
 				"Welcome to myDropbox Application\r\n" + 
 				"======================================================\r\n" + 
 				"Please input command (newuser username password password, login\r\n" + 
@@ -48,41 +48,41 @@ public class Main {
 				"======================================================");
 		
 		while(true) {
-			String command = input.next();
-			if(command.compareToIgnoreCase("newuser")==0) {
-				String username = input.next();
-				String pass = input.next();
-				String confirmPass = input.next();
-				if(pass.equals(confirmPass)) {
+			String command = input.next();//keep command input
+			if(command.compareToIgnoreCase("newuser")==0) {//newuser
+				String username = input.next();//username
+				String pass = input.next();//password
+				String confirmPass = input.next();//confiem password
+				if(pass.equals(confirmPass)) {//check comfirm password
 					addUser(username,pass);
 					System.out.println("OK");
-				}else {
+				}else {//if comfirm fail to this case
 					System.out.println("Password confirm is Wrong");
 				}
 				
-			}else if(command.compareToIgnoreCase("login")==0) {
+			}else if(command.compareToIgnoreCase("login")==0) {//login
 				String username = input.next();
 				String pass = input.next();
 				boolean canLogin = false;
 				try {
-					 canLogin = login(username, pass);
-				}catch(NullPointerException e) {
+					 canLogin = login(username, pass);//login function
+				}catch(NullPointerException e) {//if username is not exist or wrong password
 					System.out.println("Username or password in incorrect. Please try again.");
 					continue;
 				}
-				if(canLogin)System.out.println("OK");
-			}else if(command.compareToIgnoreCase("put")==0) {
-				if(!currentUser.isValid()) {
+				if(canLogin)System.out.println("OK");//if login it say "OK"
+			}else if(command.compareToIgnoreCase("put")==0) {//put command
+				if(!currentUser.isValid()) {//check user is login or not
 					System.out.println("You can't upload file, Please Login first.");
 					continue;
 				}
 				System.out.println("Working Directory = " +
-						System.getProperty("user.dir"));
-				String fileName = input.next();
-				String path = System.getProperty("user.dir")+ "/" + fileName;
+						System.getProperty("user.dir"));//say it use current project directory
+				String fileName = input.next();//filename input
+				String path = System.getProperty("user.dir")+ "/" + fileName;//get input file from current project directory
 				System.out.println("File Directory = " +
-						path);
-				TransferManager tm = new TransferManager(S3.s3Client);
+						path);//say file directory
+				TransferManager tm = new TransferManager(S3.s3Client);//use tranfermanager
 		        Upload upload = tm.upload(
 		           S3.bucketName, (currentUser.getUsername() + " "  +  fileName), new File(path));
 				   // Use TransferManager to upload file to S3
@@ -94,47 +94,49 @@ public class Main {
 				       	System.out.println("Unable to upload file, upload was aborted. Please check filename.");
 				       	//amazonClientException.printStackTrace();
 			       }
-			}else if(command.compareToIgnoreCase("view")==0) {
-				if(!currentUser.isValid()) {
+			}else if(command.compareToIgnoreCase("view")==0) {//view command
+				if(!currentUser.isValid()) {//check login or not
 					System.out.println("Please Login first.");
 					continue;
 				}
 				try {
+					//this is query to see file sharing permission
 					Map<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
-					eav.put(":username",new AttributeValue().withS(currentUser.getUsername()));
-
+					eav.put(":username",new AttributeValue().withS(currentUser.getUsername()));//keep user name to expression variable
 					DynamoDBQueryExpression<Permission> queryExpression = new DynamoDBQueryExpression<Permission>() 
 						.withConsistentRead(false)
 					    .withKeyConditionExpression("username = :username")
-					    .withExpressionAttributeValues(eav);
-
+					    .withExpressionAttributeValues(eav);//query method
 					List<Permission> latestReplies = DynamoDB.mapper.query(Permission.class, queryExpression);
 					
+					//view file that user have permission
 		            final ListObjectsV2Request req = new ListObjectsV2Request().withBucketName(S3.bucketName).withMaxKeys(2);
 		            ListObjectsV2Result result;
-		            boolean haveFile = false;
+		            boolean haveFile = false;//if don't file, it say to user
 		            do {               
 		               result = S3.s3Client.listObjectsV2(req);
+		               //first for loop to view own file
 		               for (S3ObjectSummary objectSummary : 
 		                   result.getObjectSummaries()) {
-		            	   String key = objectSummary.getKey();
-		            	   String usernameKey = key.substring(0, key.indexOf(' '));
-		            	   String fileName = key.substring(key.indexOf(' ')+1 , key.length());
+		            	   String key = objectSummary.getKey();//get key in S3
+		            	   String usernameKey = key.substring(0, key.indexOf(' '));//split user name from S3key
+		            	   String fileName = key.substring(key.indexOf(' ')+1 , key.length());//split filename from S3key
 		            	   if(usernameKey.equals(currentUser.getUsername())) {
 		            		   System.out.println(fileName + "  " +
 			                           objectSummary.getSize() + " " +
 			                		   objectSummary.getLastModified() + " " +
 			                		   usernameKey
-			                           );
+			                           );//print filename and metadata to user
 		            		   haveFile=true;
 		            	   }
 		               }
+		               //second loop to view shared file it same in first loop except condition
 		               for (S3ObjectSummary objectSummary:
 		            		   result.getObjectSummaries()) {
 		            	   String key = objectSummary.getKey();
 		            	   String usernameKey = key.substring(0, key.indexOf(' '));
 		            	   String fileName = key.substring(key.indexOf(' ')+1 , key.length());
-		            	   for (Permission permission:latestReplies) {
+		            	   for (Permission permission:latestReplies) {//this is condition to view file to view shared file
 		            		   if(permission.getObjectKey().equals(key)) {
 		            			   System.out.println(fileName + "  " +
 				                           objectSummary.getSize() + " " +
@@ -151,7 +153,7 @@ public class Main {
 		            } while(result.isTruncated() == true ); 
 		            if(!haveFile)System.out.println("you don't any file in bucket");
 		            haveFile=false;
-		            
+		            //catch exception
 		         } catch (AmazonServiceException ase) {
 		            System.out.println("Caught an AmazonServiceException, " +
 		            		"which means your request made it " +
@@ -170,25 +172,25 @@ public class Main {
 		                    "such as not being able to access the network.");
 		            System.out.println("Error Message: " + ace.getMessage());
 		        }
-			}else if(command.compareToIgnoreCase("get")==0) {
+			}else if(command.compareToIgnoreCase("get")==0) {//get command
 				if(!currentUser.isValid()) {
 					System.out.println("Please Login first.");
 					continue;
-				}
+				}//check user is login or not
 				String fileName = input.next();
 				String userName = input.next();
-				String key = userName + " " + fileName;
+				String key = userName + " " + fileName;//get key form input and split filename and owner username
 				
+				//query permission
 				Map<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
-				eav.put(":username", new AttributeValue().withS(currentUser.getUsername()));
-				
+				eav.put(":username", new AttributeValue().withS(currentUser.getUsername()));//keep expression varible to keep username				
 				DynamoDBQueryExpression<Permission> queryExpression = new DynamoDBQueryExpression<Permission>() 
 					    .withKeyConditionExpression("username = :username")
 					    .withExpressionAttributeValues(eav);
 				List<Permission> permissions = DynamoDB.mapper.query(Permission.class, queryExpression);
 				
 				
-				
+				//if have permission you can download 
 				if(userName.equals(currentUser.getUsername())||containsKey(permissions, key)) {
 					S3Object object = null;
 					try {
@@ -208,17 +210,17 @@ public class Main {
 					}catch(Exception e) {
 						System.out.println("File not found, please check file name.");
 					}
-				}else {
+				}else {//if you don't permission to download
 					System.out.println("You don't have Permission");
 				}
 				
-			}else if(command.compareToIgnoreCase("logout")==0) {
+			}else if(command.compareToIgnoreCase("logout")==0) {//logout command
 				if(!currentUser.isValid()) {
 					System.out.println("Please Login first.");
 					continue;
-				}
+				}//check that you are login or not
 				currentUser.setUsername(null);
-				currentUser.setPassword(null);
+				currentUser.setPassword(null);//set current user to null
 				System.out.println("OK");
 			}else if(command.compareToIgnoreCase("quit")==0) {
 				System.out.println(
@@ -226,14 +228,14 @@ public class Main {
 						"Thank you for using myDropbox.\r\n" +
 						"See you again!" );
 				System.exit(0);
-			}else if(command.compareToIgnoreCase("share")==0) {
+			}else if(command.compareToIgnoreCase("share")==0) {//share
 				if(!currentUser.isValid()) {
 					System.out.println("Please Login first.");
 					continue;
-				}
+				}//check login or not
 				String fileName = input.next();
 				String shareUsername = input.next();
-				boolean isOk = addPermission(shareUsername, fileName);
+				boolean isOk = addPermission(shareUsername, fileName);//add permission table
 				if(isOk)System.out.println("OK");
 			}
 		}
